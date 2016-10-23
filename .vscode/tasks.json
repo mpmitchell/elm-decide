@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "command": "elm-make",
   "isShellCommand": true,
-  "args": [ "Decide.elm", "--output", "elm.js" ],
+  "args": [ "Decide.elm", "--output", "js/elm.js" ],
   "showOutput": "never",
   "echoCommand": true
 }
