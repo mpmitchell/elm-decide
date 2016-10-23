@@ -1,23 +1,71 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 
-<head>
-  <meta charset="UTF-8">
-  <title>Elm • Decide</title>
-  <script type="text/javascript" src="js/elm.js"></script>
-  <link rel="stylesheet" href="css/style.css">
-</head>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<body>
-</body>
+    <title>Elm • Decide</title>
+    <meta name="description" content="Graduate game developer from Glasgow Caledonian University">
 
-<script type="text/javascript">
-var storedState = localStorage.getItem('elm-decide-save');
-var startingState = storedState ? JSON.parse(storedState) : null;
-var elm = Elm.Decide.fullscreen(startingState);
-elm.ports.setStorage.subscribe(function(state) {
-    localStorage.setItem('elm-decide-save', JSON.stringify(state));
-});
-</script>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="canonical" href="http://mpmitchell.github.io">
+
+    <script src="js/jquery-3.1.0.min.js"></script>
+    <script src="js/title.js"></script>
+    <script type="text/javascript" src="js/elm.js"></script>
+  </head>
+
+  <body>
+
+    <div id="page-wrapper">
+
+      <aside class="clone">
+        <a href="http://mpmitchell.github.io">
+          <h1>Matthew Mitchell</h1>
+          <h2>Game Developer</h2>
+          <img src="assets/portrait.png">
+        </a>
+        <p>
+          A recent graduate from Glasgow Caledonian University with a 1st class Honours degree in game development with experience developing games for both desktop computers and mobile Android devices using the Unity game engine and C++. Especially interested in artificial intelligence and software architecture.
+        </p>
+        <h2>Contact</h2>
+        <span>Email: <a href="mailto:matt.mancer@gmail.com">matt.mancer@gmail.com</a></span>
+        <span>Github: <a href="https://github.com/mpmitchell">mpmitchell</a></span>
+        <span>LinkedIn: <a href="https://uk.linkedin.com/in/matthewpmitchell">matthewpmitchell</a></span>
+      </aside>
+      <aside id="page-header">
+        <a href="http://mpmitchell.github.io">
+          <h1>Matthew Mitchell</h1>
+          <h2>Game Developer</h2>
+          <img src="assets/portrait.png">
+        </a>
+        <p>
+          A recent graduate from Glasgow Caledonian University with a 1st class Honours degree in game development with experience developing games for both desktop computers and mobile Android devices using the Unity game engine and C++. Especially interested in artificial intelligence and software architecture.
+        </p>
+        <h2>Contact</h2>
+        <span>Email: <a href="mailto:matt.mancer@gmail.com">matt.mancer@gmail.com</a></span>
+        <span>Github: <a href="https://github.com/mpmitchell">mpmitchell</a></span>
+        <span>LinkedIn: <a href="https://uk.linkedin.com/in/matthewpmitchell">matthewpmitchell</a></span>
+      </aside>
+
+      <div id="page-content">
+      </div>
+
+    </div>
+
+  </body>
+
+  <script type="text/javascript">
+    var storedState = localStorage.getItem('elm-decide-save')
+    var startingState = storedState ? JSON.parse(storedState) : null
+    var node = document.getElementById('page-content')
+    var elm = Elm.Decide.embed(node, startingState)
+    elm.ports.setStorage.subscribe(function(state) {
+        localStorage.setItem('elm-decide-save', JSON.stringify(state))
+    })
+    </script>
 
 </html>
