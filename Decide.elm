@@ -255,7 +255,8 @@ view model =
 
 viewInput : String -> Html Msg
 viewInput field =
-    input
+    span [ class "input-wrapper" ]
+        [ input
         [ onInput UpdateField
         , onEnter AddEntry
         , autofocus True
@@ -263,6 +264,12 @@ viewInput field =
         , value field
         ]
         []
+        , button
+            [ class "enter-button"
+            , onClick AddEntry
+            ]
+            [ text ">" ]
+        ]
 
 
 onEnter : Msg -> Attribute Msg
