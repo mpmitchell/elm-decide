@@ -2,12 +2,13 @@ port module Decide exposing (..)
 
 import Dom
 import Html exposing (..)
-import Html.Attributes exposing (..)
 import Html.App as App
+import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Html.Lazy exposing (..)
 import Json.Decode as Json
 import Random
+import String
 import Task
 
 
@@ -119,12 +120,15 @@ update msg model =
             { model | field = field } ! []
 
         AddEntry ->
-            { model
-                | entries = List.append model.entries (newEntry model.field model.uid :: [])
-                , field = ""
-                , uid = model.uid + 1
-            }
-                ! []
+            if not <| String.isEmpty model.field then
+                { model
+                    | entries = List.append model.entries (newEntry model.field model.uid :: [])
+                    , field = ""
+                    , uid = model.uid + 1
+                }
+                    ! []
+            else
+                model ! []
 
         ToggleEditing id isEditing ->
             let
@@ -257,13 +261,13 @@ viewInput : String -> Html Msg
 viewInput field =
     span [ class "input-wrapper" ]
         [ input
-        [ onInput UpdateField
-        , onEnter AddEntry
-        , autofocus True
-        , placeholder "Enter text"
-        , value field
-        ]
-        []
+            [ onInput UpdateField
+            , onEnter AddEntry
+            , autofocus True
+            , placeholder "Enter text"
+            , value field
+            ]
+            []
         , button
             [ class "enter-button"
             , onClick AddEntry
