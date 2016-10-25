@@ -32,6 +32,7 @@ main =
 type alias Model =
     { entries : List Entry
     , selectedEntry : Maybe Entry
+    , selectedId : Int
     , field : String
     , uid : Int
     }
@@ -48,6 +49,7 @@ emptyModel : Model
 emptyModel =
     { entries = []
     , selectedEntry = Nothing
+    , selectedId = -1
     , field = ""
     , uid = 0
     }
@@ -107,6 +109,7 @@ updateWithStorage msg model =
                             (\e -> { e | editing = False })
                             newModel.entries
                     , selectedEntry = Nothing
+                    , selectedId = -1
                 }
             , cmds
             ]
@@ -132,6 +135,17 @@ update msg model =
 
         ToggleEditing id isEditing ->
             let
+                isNotEmpty =
+                    case
+                        List.head <|
+                            List.filter (\e -> e.id == id) model.entries
+                    of
+                        Nothing ->
+                            True
+
+                        Just entry ->
+                            String.isEmpty entry.description
+
                 updateEntry e =
                     if e.id == id then
                         { e | editing = isEditing }
@@ -139,49 +153,51 @@ update msg model =
                         e
 
                 focus =
-                    Dom.focus (toString id)
+                    let
+                        task =
+                            if isEditing == True then
+                                Dom.focus (toString id)
+                            else
+                                Task.succeed ()
+                    in
+                        Task.perform (\_ -> NoOp) (\_ -> NoOp) task
             in
-                { model | entries = List.map updateEntry model.entries }
-                    ! [ Task.perform (\_ -> NoOp) (\_ -> NoOp) focus ]
+                if isNotEmpty then
+                    { model | entries = List.map updateEntry model.entries }
+                        ! [ focus ]
+                else
+                    removeEntry model id ! []
 
         EditEntry id description ->
-            { model
-                | entries =
-                    List.map
-                        (\e ->
-                            if id == e.id then
-                                { e | description = description }
-                            else
-                                e
-                        )
-                        model.entries
-                , selectedEntry =
-                    case model.selectedEntry of
-                        Nothing ->
-                            Nothing
-
-                        Just entry ->
-                            if id == entry.id then
-                                Just { entry | description = description }
-                            else
-                                Just entry
-            }
-                ! []
+            updateEntry model id description ! []
 
         ToggleEditingSelected isEditing ->
-            case model.selectedEntry of
-                Nothing ->
-                    model ! []
+            let
+                entry =
+                    List.head <| List.filter (\e -> e.id == model.selectedId) model.entries
 
-                Just entry ->
-                    { model
-                        | selectedEntry = Just { entry | editing = isEditing }
-                    }
-                        ! [ Task.perform
-                                (\_ -> NoOp)
-                                (\_ -> NoOp)
-                                (Dom.focus "selected")
-                          ]
+                focus =
+                    let
+                        task =
+                            if isEditing == True then
+                                Dom.focus "selected"
+                            else
+                                Task.succeed ()
+                    in
+                        Task.perform (\_ -> NoOp) (\_ -> NoOp) task
+            in
+                case ( entry, model.selectedEntry ) of
+                    ( Just entry, Just selectedEntry ) ->
+                        if not <| String.isEmpty selectedEntry.description then
+                            { model
+                                | selectedEntry = Just { selectedEntry | editing = isEditing }
+                            }
+                                ! [ focus ]
+                        else
+                            removeEntry model selectedEntry.id ! []
+
+                    _ ->
+                        model ! []
 
         EditSelectedEntry description ->
             case model.selectedEntry of
@@ -189,40 +205,17 @@ update msg model =
                     model ! []
 
                 Just entry ->
-                    { model
-                        | entries =
-                            List.map
-                                (\e ->
-                                    if e.id == entry.id then
-                                        { e | description = description }
-                                    else
-                                        e
-                                )
-                                model.entries
-                        , selectedEntry = Just { entry | description = description }
-                    }
-                        ! []
+                    updateEntry model entry.id description ! []
 
         RemoveEntry id ->
-            { model
-                | entries = List.filter (\e -> e.id /= id) model.entries
-                , selectedEntry =
-                    case model.selectedEntry of
-                        Nothing ->
-                            Nothing
-
-                        Just entry ->
-                            if id == entry.id then
-                                Nothing
-                            else
-                                Just entry
-            }
-                ! []
+            removeEntry model id ! []
 
         RemoveAllEntries ->
             { model
                 | entries = []
                 , selectedEntry = Nothing
+                , selectedId = -1
+                , uid = 0
             }
                 ! []
 
@@ -232,10 +225,82 @@ update msg model =
             )
 
         NewRandom int ->
-            { model | selectedEntry = List.head <| List.drop int model.entries } ! []
+            let
+                selectedEntry =
+                    List.head <| List.drop int model.entries
+
+                selectedId =
+                    case selectedEntry of
+                        Nothing ->
+                            -1
+
+                        Just entry ->
+                            entry.id
+            in
+                { model
+                    | selectedEntry = selectedEntry
+                    , selectedId = selectedId
+                }
+                    ! []
 
         NoOp ->
             model ! []
+
+
+removeEntry : Model -> Int -> Model
+removeEntry model id =
+    let
+        ( selectedEntry, selectedId ) =
+            case model.selectedEntry of
+                Nothing ->
+                    ( Nothing, -1 )
+
+                Just entry ->
+                    if entry.id == id then
+                        ( Nothing, -1 )
+                    else
+                        ( Just entry, entry.id )
+
+        model =
+            { model
+                | entries = List.filter (\e -> e.id /= id) model.entries
+                , selectedEntry = selectedEntry
+                , selectedId = selectedId
+            }
+    in
+        if List.isEmpty model.entries then
+            { model | uid = 0 }
+        else
+            model
+
+
+updateEntry : Model -> Int -> String -> Model
+updateEntry model id description =
+    let
+        entry =
+            List.head <| List.filter (\e -> e.id == id) model.entries
+    in
+        { model
+            | entries =
+                List.map
+                    (\e ->
+                        if e.id == id then
+                            { e | description = description }
+                        else
+                            e
+                    )
+                    model.entries
+            , selectedEntry =
+                case ( entry, model.selectedEntry ) of
+                    ( Just entry, Just selectedEntry ) ->
+                        if entry.id == selectedEntry.id then
+                            Just { selectedEntry | description = description }
+                        else
+                            Just selectedEntry
+
+                    _ ->
+                        model.selectedEntry
+        }
 
 
 
