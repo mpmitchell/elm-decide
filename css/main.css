@@ -129,29 +129,19 @@ body {
     flex: 0 0 350px;
     margin-left: 15px;
     height: 100%;
-    position: fixed;
-    width: 350px;
-    left: 5%; }
+    flex-basis: 350px; }
     #page-wrapper aside * {
       text-align: center; }
     #page-wrapper aside img {
       width: 150px;
       height: auto;
       margin: 15px 0; }
-    #page-wrapper aside.clone {
-      display: flex;
-      visibility: hidden;
-      position: relative; }
   @media screen and (max-width: 790px) {
     #page-wrapper {
       flex-direction: column; }
       #page-wrapper aside {
-        position: static;
-        width: auto;
         margin: 0 15px 15px;
-        flex: 0 0 auto; }
-        #page-wrapper aside.clone {
-          display: none; } }
+        flex: 0 0 auto; } }
 
 /**
  * Page content
