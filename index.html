@@ -47,6 +47,10 @@
         </div>
 
         <div id="page-content">
+          <header>
+            <h1><a href="/#demos">Elm Decide</a></h1>
+          </header>
+          <div id="elm"></div>
         </div>
 
       </div>
@@ -58,7 +62,7 @@
   <script type="text/javascript">
     var storedState = localStorage.getItem('elm-decide-save')
     var startingState = storedState ? JSON.parse(storedState) : null
-    var node = document.getElementById('page-content')
+    var node = document.getElementById('elm')
     var elm = Elm.Decide.embed(node, startingState)
     elm.ports.setStorage.subscribe(function(state) {
         localStorage.setItem('elm-decide-save', JSON.stringify(state))
