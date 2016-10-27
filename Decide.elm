@@ -373,7 +373,7 @@ viewEntry entry =
             ]
     else
         li
-            [ onDoubleClick (ToggleEditing entry.id True)
+            [ onClick (ToggleEditing entry.id True)
             ]
             [ span [] [ text entry.description ]
             , button [ onClick (RemoveEntry entry.id) ] [ text "X" ]
@@ -407,7 +407,7 @@ viewSelectedEntry selectedEntry =
               else
                 div
                     [ id "selected"
-                    , onDoubleClick (ToggleEditingSelected True)
+                    , onClick (ToggleEditingSelected True)
                     ]
                     [ innerText ]
             ]
