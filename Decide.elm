@@ -141,10 +141,10 @@ update msg model =
                             List.filter (\e -> e.id == id) model.entries
                     of
                         Nothing ->
-                            True
+                            False
 
                         Just entry ->
-                            String.isEmpty entry.description
+                            not <| String.isEmpty entry.description
 
                 updateEntry e =
                     if e.id == id then
