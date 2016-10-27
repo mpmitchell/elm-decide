@@ -5,7 +5,6 @@
     "**/.svn": true,
     "**/.hg": true,
     "**/.DS_Store": true,
-    ".vscode": true,
     "elm-stuff": true,
     "Gemfile.lock": true,
     ".sass-cache": true
