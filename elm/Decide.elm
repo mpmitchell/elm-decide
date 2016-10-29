@@ -309,22 +309,17 @@ updateEntry model id description =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ div [ class "wrapper" ]
-            [ lazy viewInput model.field
-            , lazy viewEntries model.entries
-            , div [ class "footer" ]
-                [ button [ onClick RemoveAllEntries ] [ text "Clear" ]
-                , button [ onClick SelectRandomEntry ] [ text "Randomise" ]
-                ]
-            ]
+    article []
+        [ lazy viewHeader model.field
+        , lazy viewEntries model.entries
         , lazy viewSelectedEntry model.selectedEntry
+        , viewFooter
         ]
 
 
-viewInput : String -> Html Msg
-viewInput field =
-    span [ class "input-wrapper" ]
+viewHeader : String -> Html Msg
+viewHeader field =
+    header []
         [ input
             [ onInput UpdateField
             , onEnter AddEntry
@@ -334,10 +329,8 @@ viewInput field =
             ]
             []
         , button
-            [ class "enter-button"
-            , onClick AddEntry
-            ]
-            [ text ">" ]
+            [ onClick AddEntry ]
+            [ text "Add" ]
         ]
 
 
@@ -383,18 +376,16 @@ viewEntry entry =
 viewSelectedEntry : Maybe Entry -> Html Msg
 viewSelectedEntry selectedEntry =
     let
-        ( entry, visibility, innerText ) =
+        ( entry, display, innerText ) =
             case selectedEntry of
                 Nothing ->
-                    ( emptyEntry, "hidden", text "" )
+                    ( emptyEntry, "none", text "" )
 
                 Just entry ->
-                    ( entry, "visible", text entry.description )
+                    ( entry, "block", text entry.description )
     in
-        div
-            [ class "wrapper"
-            , style [ ( "visibility", visibility ) ]
-            ]
+        section
+            [ style [ ( "display", display ) ] ]
             [ if entry.editing then
                 input
                     [ id "selected"
@@ -405,9 +396,18 @@ viewSelectedEntry selectedEntry =
                     ]
                     []
               else
-                div
+                h1
                     [ id "selected"
                     , onClick (ToggleEditingSelected True)
                     ]
                     [ innerText ]
             ]
+
+
+viewFooter : Html Msg
+viewFooter =
+    footer []
+        [ button [ onClick RemoveAllEntries ] [ text "Clear" ]
+        , hr [] []
+        , button [ onClick SelectRandomEntry ] [ text "Randomise" ]
+        ]

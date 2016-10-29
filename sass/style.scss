@@ -1,0 +1,114 @@
+$header-height: 50px;
+$footer-height: 50px;
+
+@mixin media-query($device) {
+    @media screen and (max-width: $device) {
+        @content;
+    }
+}
+
+* {
+  box-sizing: border-box;
+  background-color: lighten(lightgrey, 10%);
+}
+
+button {
+  background-color: transparent;
+  border: 0;
+}
+
+input {
+  padding: 0 15px;
+  border: 1px solid black;
+}
+
+article, header, footer {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: calc(50% - 250px);
+  height: $header-height;
+  padding: 10px;
+  display: flex;
+  background-color: lightgrey;
+
+  input {
+    flex-grow: 1;
+  }
+
+  button {
+    color: green;
+  }
+
+  @include media-query(500px) {
+    left: 0;
+  }
+}
+
+ul {
+  margin-top: $header-height + 10px;
+  margin-bottom: $footer-height + 10px;
+  padding: 0;
+
+  li {
+    display: flex;
+    padding: 15px;
+    border-bottom: 1px solid black;
+
+    span, input {
+      flex-grow: 1;
+    }
+
+    button {
+      color: red;
+    }
+
+    input {
+      border: 0;
+      font-size: large;
+    }
+  }
+}
+
+section {
+  width: 50%;
+  margin: 0 auto $footer-height + 30px;
+  text-align: center;
+  padding: 5px 10px;
+
+  &, * {
+    background-color: lightgrey;
+    font-size: larger;
+  }
+
+  * {
+    padding: 0;
+    margin: 0;
+  }
+
+  input {
+    width: 100%;
+  }
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: calc(50% - 250px);
+  height: $footer-height;
+  display: flex;
+  background-color: lightgrey;
+
+  button {
+    flex-grow: 1;
+  }
+
+  @include media-query(500px) {
+    left: 0;
+  }
+}

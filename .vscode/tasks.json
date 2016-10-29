@@ -2,9 +2,32 @@
   // See https://go.microsoft.com/fwlink/?LinkId=733558
   // for the documentation about the tasks.json format
   "version": "0.1.0",
-  "command": "elm-make",
+  "command": "zsh",
   "isShellCommand": true,
-  "args": [ "Decide.elm", "--output", "js/elm.js" ],
-  "showOutput": "never",
-  "echoCommand": true
+  "args": ["-lc"],
+  "showOutput": "always",
+  "tasks": [
+    {
+      "taskName": "build elm and sass",
+      "suppressTaskName": true,
+      "args": [
+        "elm make elm/Decide.elm --output www/js/decide.js; sass sass/style.scss www/css/style.css"
+      ],
+      "isBuildCommand": true
+    },
+    {
+      "taskName": "build cordova",
+      "suppressTaskName": true,
+      "args": [
+        "PATH=$PATH:~/Android/Sdk/tools; cordova build"
+      ]
+    },
+    {
+      "taskName": "run cordova",
+      "suppressTaskName": true,
+      "args": [
+        "PATH=$PATH:~/Android/Sdk/tools; cordova build; cordova run android"
+      ]
+    }
+  ]
 }

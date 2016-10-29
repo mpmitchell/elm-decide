@@ -5,8 +5,8 @@
     "**/.svn": true,
     "**/.hg": true,
     "**/.DS_Store": true,
+    ".sass-cache": true,
     "elm-stuff": true,
-    "Gemfile.lock": true,
-    ".sass-cache": true
+    "platforms": true
   }
 }
