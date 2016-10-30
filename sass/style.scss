@@ -43,6 +43,7 @@ header {
 
   button {
     color: green;
+    padding-right: 0;
   }
 
   @include media-query(500px) {
@@ -105,7 +106,11 @@ footer {
   background-color: lightgrey;
 
   button {
-    flex-grow: 1;
+    width: 50%;
+
+    &:not(:last-child) {
+      border-right: 1px solid black;
+    }
   }
 
   @include media-query(500px) {

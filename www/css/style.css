@@ -26,7 +26,8 @@ header {
   header input {
     flex-grow: 1; }
   header button {
-    color: green; }
+    color: green;
+    padding-right: 0; }
   @media screen and (max-width: 500px) {
     header {
       left: 0; } }
@@ -69,7 +70,9 @@ footer {
   display: flex;
   background-color: lightgrey; }
   footer button {
-    flex-grow: 1; }
+    width: 50%; }
+    footer button:not(:last-child) {
+      border-right: 1px solid black; }
   @media screen and (max-width: 500px) {
     footer {
       left: 0; } }

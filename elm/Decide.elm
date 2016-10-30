@@ -408,6 +408,5 @@ viewFooter : Html Msg
 viewFooter =
     footer []
         [ button [ onClick RemoveAllEntries ] [ text "Clear" ]
-        , hr [] []
-        , button [ onClick SelectRandomEntry ] [ text "Randomise" ]
+        , button [ onClick SelectRandomEntry ] [ text "Pick" ]
         ]

@@ -9042,12 +9042,6 @@ var _user$project$Decide$viewFooter = A2(
 					_elm_lang$html$Html$text('Clear')
 				])),
 			A2(
-			_elm_lang$html$Html$hr,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
-			_elm_lang$core$Native_List.fromArray(
-				[])),
-			A2(
 			_elm_lang$html$Html$button,
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -9055,7 +9049,7 @@ var _user$project$Decide$viewFooter = A2(
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html$text('Randomise')
+					_elm_lang$html$Html$text('Pick')
 				]))
 		]));
 var _user$project$Decide$RemoveEntry = function (a) {
