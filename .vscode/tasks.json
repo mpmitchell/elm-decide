@@ -11,7 +11,7 @@
       "taskName": "build elm and sass",
       "suppressTaskName": true,
       "args": [
-        "elm make elm/Decide.elm --output www/js/decide.js; sass sass/style.scss www/css/style.css"
+        "elm make elm/Main.elm --output www/js/main.js; sass sass/style.scss www/css/style.css"
       ],
       "isBuildCommand": true
     },

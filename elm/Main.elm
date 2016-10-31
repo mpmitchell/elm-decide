@@ -1,4 +1,4 @@
-port module Decide exposing (..)
+port module Main exposing (..)
 
 import Dom
 import Html exposing (..)

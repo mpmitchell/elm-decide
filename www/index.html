@@ -24,19 +24,19 @@
 		<meta name="msapplication-tap-highlight" content="no">
 		<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
 		<link rel="stylesheet" type="text/css" href="css/style.css">
-		<script type="text/javascript" src="js/decide.js"></script>
-		<title>Elm Decide</title>
+		<script type="text/javascript" src="js/main.js"></script>
+		<title>Elm Picker</title>
 	</head>
 
 	<body>
 	</body>
 
 	<script type="text/javascript">
-        var storedState = localStorage.getItem('elm-decide-save')
+        var storedState = localStorage.getItem('elm-picker-save')
         var startingState = storedState ? JSON.parse(storedState) : null
-        var elm = Elm.Decide.fullscreen(startingState)
+        var elm = Elm.Main.fullscreen(startingState)
         elm.ports.setStorage.subscribe(function(state) {
-            localStorage.setItem('elm-decide-save', JSON.stringify(state))
+            localStorage.setItem('elm-picker-save', JSON.stringify(state))
         })
     </script>
 

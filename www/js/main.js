@@ -8911,7 +8911,7 @@ var _elm_lang$html$Html_Lazy$lazy3 = _elm_lang$virtual_dom$VirtualDom$lazy3;
 var _elm_lang$html$Html_Lazy$lazy2 = _elm_lang$virtual_dom$VirtualDom$lazy2;
 var _elm_lang$html$Html_Lazy$lazy = _elm_lang$virtual_dom$VirtualDom$lazy;
 
-var _user$project$Decide$updateEntry = F3(
+var _user$project$Main$updateEntry = F3(
 	function (model, id, description) {
 		var entry = _elm_lang$core$List$head(
 			A2(
@@ -8945,7 +8945,7 @@ var _user$project$Decide$updateEntry = F3(
 				}()
 			});
 	});
-var _user$project$Decide$removeEntry = F2(
+var _user$project$Main$removeEntry = F2(
 	function (model, id) {
 		var _p2 = function () {
 			var _p3 = model.selectedEntry;
@@ -8978,12 +8978,12 @@ var _user$project$Decide$removeEntry = F2(
 			model,
 			{uid: 0}) : model;
 	});
-var _user$project$Decide$newEntry = F2(
+var _user$project$Main$newEntry = F2(
 	function (description, id) {
 		return {description: description, editing: false, id: id};
 	});
-var _user$project$Decide$emptyEntry = {description: '', editing: false, id: 0};
-var _user$project$Decide$emptyModel = {
+var _user$project$Main$emptyEntry = {description: '', editing: false, id: 0};
+var _user$project$Main$emptyModel = {
 	entries: _elm_lang$core$Native_List.fromArray(
 		[]),
 	selectedEntry: _elm_lang$core$Maybe$Nothing,
@@ -8991,14 +8991,14 @@ var _user$project$Decide$emptyModel = {
 	field: '',
 	uid: 0
 };
-var _user$project$Decide$init = function (savedModel) {
+var _user$project$Main$init = function (savedModel) {
 	return A2(
 		_elm_lang$core$Platform_Cmd_ops['!'],
-		A2(_elm_lang$core$Maybe$withDefault, _user$project$Decide$emptyModel, savedModel),
+		A2(_elm_lang$core$Maybe$withDefault, _user$project$Main$emptyModel, savedModel),
 		_elm_lang$core$Native_List.fromArray(
 			[]));
 };
-var _user$project$Decide$setStorage = _elm_lang$core$Native_Platform.outgoingPort(
+var _user$project$Main$setStorage = _elm_lang$core$Native_Platform.outgoingPort(
 	'setStorage',
 	function (v) {
 		return {
@@ -9012,20 +9012,20 @@ var _user$project$Decide$setStorage = _elm_lang$core$Native_Platform.outgoingPor
 			uid: v.uid
 		};
 	});
-var _user$project$Decide$Model = F5(
+var _user$project$Main$Model = F5(
 	function (a, b, c, d, e) {
 		return {entries: a, selectedEntry: b, selectedId: c, field: d, uid: e};
 	});
-var _user$project$Decide$Entry = F3(
+var _user$project$Main$Entry = F3(
 	function (a, b, c) {
 		return {description: a, editing: b, id: c};
 	});
-var _user$project$Decide$NewRandom = function (a) {
+var _user$project$Main$NewRandom = function (a) {
 	return {ctor: 'NewRandom', _0: a};
 };
-var _user$project$Decide$SelectRandomEntry = {ctor: 'SelectRandomEntry'};
-var _user$project$Decide$RemoveAllEntries = {ctor: 'RemoveAllEntries'};
-var _user$project$Decide$viewFooter = A2(
+var _user$project$Main$SelectRandomEntry = {ctor: 'SelectRandomEntry'};
+var _user$project$Main$RemoveAllEntries = {ctor: 'RemoveAllEntries'};
+var _user$project$Main$viewFooter = A2(
 	_elm_lang$html$Html$footer,
 	_elm_lang$core$Native_List.fromArray(
 		[]),
@@ -9035,7 +9035,7 @@ var _user$project$Decide$viewFooter = A2(
 			_elm_lang$html$Html$button,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Events$onClick(_user$project$Decide$RemoveAllEntries)
+					_elm_lang$html$Html_Events$onClick(_user$project$Main$RemoveAllEntries)
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -9045,36 +9045,36 @@ var _user$project$Decide$viewFooter = A2(
 			_elm_lang$html$Html$button,
 			_elm_lang$core$Native_List.fromArray(
 				[
-					_elm_lang$html$Html_Events$onClick(_user$project$Decide$SelectRandomEntry)
+					_elm_lang$html$Html_Events$onClick(_user$project$Main$SelectRandomEntry)
 				]),
 			_elm_lang$core$Native_List.fromArray(
 				[
 					_elm_lang$html$Html$text('Pick')
 				]))
 		]));
-var _user$project$Decide$RemoveEntry = function (a) {
+var _user$project$Main$RemoveEntry = function (a) {
 	return {ctor: 'RemoveEntry', _0: a};
 };
-var _user$project$Decide$EditSelectedEntry = function (a) {
+var _user$project$Main$EditSelectedEntry = function (a) {
 	return {ctor: 'EditSelectedEntry', _0: a};
 };
-var _user$project$Decide$ToggleEditingSelected = function (a) {
+var _user$project$Main$ToggleEditingSelected = function (a) {
 	return {ctor: 'ToggleEditingSelected', _0: a};
 };
-var _user$project$Decide$EditEntry = F2(
+var _user$project$Main$EditEntry = F2(
 	function (a, b) {
 		return {ctor: 'EditEntry', _0: a, _1: b};
 	});
-var _user$project$Decide$ToggleEditing = F2(
+var _user$project$Main$ToggleEditing = F2(
 	function (a, b) {
 		return {ctor: 'ToggleEditing', _0: a, _1: b};
 	});
-var _user$project$Decide$AddEntry = {ctor: 'AddEntry'};
-var _user$project$Decide$UpdateField = function (a) {
+var _user$project$Main$AddEntry = {ctor: 'AddEntry'};
+var _user$project$Main$UpdateField = function (a) {
 	return {ctor: 'UpdateField', _0: a};
 };
-var _user$project$Decide$NoOp = {ctor: 'NoOp'};
-var _user$project$Decide$update = F2(
+var _user$project$Main$NoOp = {ctor: 'NoOp'};
+var _user$project$Main$update = F2(
 	function (msg, model) {
 		var _p5 = msg;
 		switch (_p5.ctor) {
@@ -9098,7 +9098,7 @@ var _user$project$Decide$update = F2(
 								model.entries,
 								A2(
 									_elm_lang$core$List_ops['::'],
-									A2(_user$project$Decide$newEntry, model.field, model.uid),
+									A2(_user$project$Main$newEntry, model.field, model.uid),
 									_elm_lang$core$Native_List.fromArray(
 										[]))),
 							field: '',
@@ -9120,10 +9120,10 @@ var _user$project$Decide$update = F2(
 					return A3(
 						_elm_lang$core$Task$perform,
 						function (_p6) {
-							return _user$project$Decide$NoOp;
+							return _user$project$Main$NoOp;
 						},
 						function (_p7) {
-							return _user$project$Decide$NoOp;
+							return _user$project$Main$NoOp;
 						},
 						task);
 				}();
@@ -9157,13 +9157,13 @@ var _user$project$Decide$update = F2(
 					_elm_lang$core$Native_List.fromArray(
 						[focus])) : A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
-					A2(_user$project$Decide$removeEntry, model, _p9),
+					A2(_user$project$Main$removeEntry, model, _p9),
 					_elm_lang$core$Native_List.fromArray(
 						[]));
 			case 'EditEntry':
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
-					A3(_user$project$Decide$updateEntry, model, _p5._0, _p5._1),
+					A3(_user$project$Main$updateEntry, model, _p5._0, _p5._1),
 					_elm_lang$core$Native_List.fromArray(
 						[]));
 			case 'ToggleEditingSelected':
@@ -9174,10 +9174,10 @@ var _user$project$Decide$update = F2(
 					return A3(
 						_elm_lang$core$Task$perform,
 						function (_p11) {
-							return _user$project$Decide$NoOp;
+							return _user$project$Main$NoOp;
 						},
 						function (_p12) {
-							return _user$project$Decide$NoOp;
+							return _user$project$Main$NoOp;
 						},
 						task);
 				}();
@@ -9205,7 +9205,7 @@ var _user$project$Decide$update = F2(
 						_elm_lang$core$Native_List.fromArray(
 							[focus])) : A2(
 						_elm_lang$core$Platform_Cmd_ops['!'],
-						A2(_user$project$Decide$removeEntry, model, _p14.id),
+						A2(_user$project$Main$removeEntry, model, _p14.id),
 						_elm_lang$core$Native_List.fromArray(
 							[]));
 				} else {
@@ -9226,14 +9226,14 @@ var _user$project$Decide$update = F2(
 				} else {
 					return A2(
 						_elm_lang$core$Platform_Cmd_ops['!'],
-						A3(_user$project$Decide$updateEntry, model, _p16._0.id, _p5._0),
+						A3(_user$project$Main$updateEntry, model, _p16._0.id, _p5._0),
 						_elm_lang$core$Native_List.fromArray(
 							[]));
 				}
 			case 'RemoveEntry':
 				return A2(
 					_elm_lang$core$Platform_Cmd_ops['!'],
-					A2(_user$project$Decide$removeEntry, model, _p5._0),
+					A2(_user$project$Main$removeEntry, model, _p5._0),
 					_elm_lang$core$Native_List.fromArray(
 						[]));
 			case 'RemoveAllEntries':
@@ -9256,7 +9256,7 @@ var _user$project$Decide$update = F2(
 					_0: model,
 					_1: A2(
 						_elm_lang$core$Random$generate,
-						_user$project$Decide$NewRandom,
+						_user$project$Main$NewRandom,
 						A2(
 							_elm_lang$core$Random$int,
 							0,
@@ -9288,9 +9288,9 @@ var _user$project$Decide$update = F2(
 						[]));
 		}
 	});
-var _user$project$Decide$updateWithStorage = F2(
+var _user$project$Main$updateWithStorage = F2(
 	function (msg, model) {
-		var _p18 = A2(_user$project$Decide$update, msg, model);
+		var _p18 = A2(_user$project$Main$update, msg, model);
 		var newModel = _p18._0;
 		var cmds = _p18._1;
 		return {
@@ -9299,7 +9299,7 @@ var _user$project$Decide$updateWithStorage = F2(
 			_1: _elm_lang$core$Platform_Cmd$batch(
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_user$project$Decide$setStorage(
+						_user$project$Main$setStorage(
 						_elm_lang$core$Native_Utils.update(
 							newModel,
 							{
@@ -9318,16 +9318,16 @@ var _user$project$Decide$updateWithStorage = F2(
 					]))
 		};
 	});
-var _user$project$Decide$onEnter = function (msg) {
+var _user$project$Main$onEnter = function (msg) {
 	var tagger = function (code) {
-		return _elm_lang$core$Native_Utils.eq(code, 13) ? msg : _user$project$Decide$NoOp;
+		return _elm_lang$core$Native_Utils.eq(code, 13) ? msg : _user$project$Main$NoOp;
 	};
 	return A2(
 		_elm_lang$html$Html_Events$on,
 		'keydown',
 		A2(_elm_lang$core$Json_Decode$map, tagger, _elm_lang$html$Html_Events$keyCode));
 };
-var _user$project$Decide$viewHeader = function (field) {
+var _user$project$Main$viewHeader = function (field) {
 	return A2(
 		_elm_lang$html$Html$header,
 		_elm_lang$core$Native_List.fromArray(
@@ -9338,8 +9338,8 @@ var _user$project$Decide$viewHeader = function (field) {
 				_elm_lang$html$Html$input,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onInput(_user$project$Decide$UpdateField),
-						_user$project$Decide$onEnter(_user$project$Decide$AddEntry),
+						_elm_lang$html$Html_Events$onInput(_user$project$Main$UpdateField),
+						_user$project$Main$onEnter(_user$project$Main$AddEntry),
 						_elm_lang$html$Html_Attributes$autofocus(true),
 						_elm_lang$html$Html_Attributes$placeholder('Enter text'),
 						_elm_lang$html$Html_Attributes$value(field)
@@ -9350,7 +9350,7 @@ var _user$project$Decide$viewHeader = function (field) {
 				_elm_lang$html$Html$button,
 				_elm_lang$core$Native_List.fromArray(
 					[
-						_elm_lang$html$Html_Events$onClick(_user$project$Decide$AddEntry)
+						_elm_lang$html$Html_Events$onClick(_user$project$Main$AddEntry)
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
@@ -9358,7 +9358,7 @@ var _user$project$Decide$viewHeader = function (field) {
 					]))
 			]));
 };
-var _user$project$Decide$viewEntry = function (entry) {
+var _user$project$Main$viewEntry = function (entry) {
 	return entry.editing ? A2(
 		_elm_lang$html$Html$li,
 		_elm_lang$core$Native_List.fromArray(
@@ -9372,11 +9372,11 @@ var _user$project$Decide$viewEntry = function (entry) {
 						_elm_lang$html$Html_Attributes$id(
 						_elm_lang$core$Basics$toString(entry.id)),
 						_elm_lang$html$Html_Events$onInput(
-						_user$project$Decide$EditEntry(entry.id)),
-						_user$project$Decide$onEnter(
-						A2(_user$project$Decide$ToggleEditing, entry.id, false)),
+						_user$project$Main$EditEntry(entry.id)),
+						_user$project$Main$onEnter(
+						A2(_user$project$Main$ToggleEditing, entry.id, false)),
 						_elm_lang$html$Html_Events$onBlur(
-						A2(_user$project$Decide$ToggleEditing, entry.id, false)),
+						A2(_user$project$Main$ToggleEditing, entry.id, false)),
 						_elm_lang$html$Html_Attributes$value(entry.description)
 					]),
 				_elm_lang$core$Native_List.fromArray(
@@ -9386,7 +9386,7 @@ var _user$project$Decide$viewEntry = function (entry) {
 		_elm_lang$core$Native_List.fromArray(
 			[
 				_elm_lang$html$Html_Events$onClick(
-				A2(_user$project$Decide$ToggleEditing, entry.id, true))
+				A2(_user$project$Main$ToggleEditing, entry.id, true))
 			]),
 		_elm_lang$core$Native_List.fromArray(
 			[
@@ -9403,7 +9403,7 @@ var _user$project$Decide$viewEntry = function (entry) {
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html_Events$onClick(
-						_user$project$Decide$RemoveEntry(entry.id))
+						_user$project$Main$RemoveEntry(entry.id))
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[
@@ -9411,20 +9411,20 @@ var _user$project$Decide$viewEntry = function (entry) {
 					]))
 			]));
 };
-var _user$project$Decide$viewEntries = function (entries) {
+var _user$project$Main$viewEntries = function (entries) {
 	return A2(
 		_elm_lang$html$Html$ul,
 		_elm_lang$core$Native_List.fromArray(
 			[]),
-		A2(_elm_lang$core$List$map, _user$project$Decide$viewEntry, entries));
+		A2(_elm_lang$core$List$map, _user$project$Main$viewEntry, entries));
 };
-var _user$project$Decide$viewSelectedEntry = function (selectedEntry) {
+var _user$project$Main$viewSelectedEntry = function (selectedEntry) {
 	var _p19 = function () {
 		var _p20 = selectedEntry;
 		if (_p20.ctor === 'Nothing') {
 			return {
 				ctor: '_Tuple3',
-				_0: _user$project$Decide$emptyEntry,
+				_0: _user$project$Main$emptyEntry,
 				_1: 'none',
 				_2: _elm_lang$html$Html$text('')
 			};
@@ -9458,11 +9458,11 @@ var _user$project$Decide$viewSelectedEntry = function (selectedEntry) {
 				_elm_lang$core$Native_List.fromArray(
 					[
 						_elm_lang$html$Html_Attributes$id('selected'),
-						_elm_lang$html$Html_Events$onInput(_user$project$Decide$EditSelectedEntry),
-						_user$project$Decide$onEnter(
-						_user$project$Decide$ToggleEditingSelected(false)),
+						_elm_lang$html$Html_Events$onInput(_user$project$Main$EditSelectedEntry),
+						_user$project$Main$onEnter(
+						_user$project$Main$ToggleEditingSelected(false)),
 						_elm_lang$html$Html_Events$onBlur(
-						_user$project$Decide$ToggleEditingSelected(false)),
+						_user$project$Main$ToggleEditingSelected(false)),
 						_elm_lang$html$Html_Attributes$value(entry.description)
 					]),
 				_elm_lang$core$Native_List.fromArray(
@@ -9472,31 +9472,31 @@ var _user$project$Decide$viewSelectedEntry = function (selectedEntry) {
 					[
 						_elm_lang$html$Html_Attributes$id('selected'),
 						_elm_lang$html$Html_Events$onClick(
-						_user$project$Decide$ToggleEditingSelected(true))
+						_user$project$Main$ToggleEditingSelected(true))
 					]),
 				_elm_lang$core$Native_List.fromArray(
 					[innerText]))
 			]));
 };
-var _user$project$Decide$view = function (model) {
+var _user$project$Main$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$article,
 		_elm_lang$core$Native_List.fromArray(
 			[]),
 		_elm_lang$core$Native_List.fromArray(
 			[
-				A2(_elm_lang$html$Html_Lazy$lazy, _user$project$Decide$viewHeader, model.field),
-				A2(_elm_lang$html$Html_Lazy$lazy, _user$project$Decide$viewEntries, model.entries),
-				A2(_elm_lang$html$Html_Lazy$lazy, _user$project$Decide$viewSelectedEntry, model.selectedEntry),
-				_user$project$Decide$viewFooter
+				A2(_elm_lang$html$Html_Lazy$lazy, _user$project$Main$viewHeader, model.field),
+				A2(_elm_lang$html$Html_Lazy$lazy, _user$project$Main$viewEntries, model.entries),
+				A2(_elm_lang$html$Html_Lazy$lazy, _user$project$Main$viewSelectedEntry, model.selectedEntry),
+				_user$project$Main$viewFooter
 			]));
 };
-var _user$project$Decide$main = {
+var _user$project$Main$main = {
 	main: _elm_lang$html$Html_App$programWithFlags(
 		{
-			init: _user$project$Decide$init,
-			view: _user$project$Decide$view,
-			update: _user$project$Decide$updateWithStorage,
+			init: _user$project$Main$init,
+			view: _user$project$Main$view,
+			update: _user$project$Main$updateWithStorage,
 			subscriptions: function (_p22) {
 				return _elm_lang$core$Platform_Sub$none;
 			}
@@ -9586,8 +9586,8 @@ var _user$project$Decide$main = {
 };
 
 var Elm = {};
-Elm['Decide'] = Elm['Decide'] || {};
-_elm_lang$core$Native_Platform.addPublicModule(Elm['Decide'], 'Decide', typeof _user$project$Decide$main === 'undefined' ? null : _user$project$Decide$main);
+Elm['Main'] = Elm['Main'] || {};
+_elm_lang$core$Native_Platform.addPublicModule(Elm['Main'], 'Main', typeof _user$project$Main$main === 'undefined' ? null : _user$project$Main$main);
 
 if (typeof define === "function" && define['amd'])
 {
