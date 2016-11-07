@@ -7,7 +7,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Html.Lazy exposing (..)
 import Json.Decode as Json
-import Random
+import PickerList exposing (PickerList, Entry)
 import String
 import Task
 
@@ -30,50 +30,32 @@ main =
 
 
 type alias Model =
-    { entries : List Entry
-    , selectedEntry : Maybe Entry
+    { lists : List PickerList
     , selectedId : Int
+    , navbarOpen : Bool
     , field : String
     , uid : Int
     }
 
 
-type alias Entry =
-    { description : String
-    , editing : Bool
-    , id : Int
-    }
-
-
 emptyModel : Model
 emptyModel =
-    { entries = []
-    , selectedEntry = Nothing
-    , selectedId = -1
+    { lists = [ PickerList.newList "List" 0 False ]
+    , selectedId = 0
+    , navbarOpen = False
     , field = ""
-    , uid = 0
-    }
-
-
-emptyEntry : Entry
-emptyEntry =
-    { description = ""
-    , editing = False
-    , id = 0
-    }
-
-
-newEntry : String -> Int -> Entry
-newEntry description id =
-    { description = description
-    , editing = False
-    , id = id
+    , uid = 1
     }
 
 
 init : Maybe Model -> ( Model, Cmd Msg )
 init savedModel =
     Maybe.withDefault emptyModel savedModel ! []
+
+
+selectedList : Model -> Maybe PickerList
+selectedList model =
+    List.head <| List.filter (\l -> l.id == model.selectedId) model.lists
 
 
 
@@ -83,33 +65,36 @@ init savedModel =
 type Msg
     = NoOp
     | UpdateField String
-    | AddEntry
+    | UpdateList PickerList.Msg
+    | AddEntry String
+    | ToggleNav
+    | NewList
+    | SelectList Int
     | ToggleEditing Int Bool
-    | EditEntry Int String
-    | ToggleEditingSelected Bool
-    | EditSelectedEntry String
-    | RemoveEntry Int
-    | RemoveAllEntries
-    | SelectRandomEntry
-    | NewRandom Int
+    | EditList Int String
+    | RemoveList Int
 
 
 updateWithStorage : Msg -> Model -> ( Model, Cmd Msg )
 updateWithStorage msg model =
     let
-        ( newModel, cmds ) =
+        ( model, cmds ) =
             update msg model
+
+        cleanLists list =
+            { list
+                | editing = False
+                , entries =
+                    List.map (\e -> { e | editing = False }) list.entries
+                , selectedId = -1
+            }
     in
-        ( newModel
+        ( model
         , Cmd.batch
             [ setStorage
-                { newModel
-                    | entries =
-                        List.map
-                            (\e -> { e | editing = False })
-                            newModel.entries
-                    , selectedEntry = Nothing
-                    , selectedId = -1
+                { model
+                    | lists = List.map cleanLists model.lists
+                    , navbarOpen = False
                 }
             , cmds
             ]
@@ -122,35 +107,62 @@ update msg model =
         UpdateField field ->
             { model | field = field } ! []
 
-        AddEntry ->
-            if not <| String.isEmpty model.field then
+        UpdateList msg ->
+            updateList msg model
+
+        AddEntry text ->
+            let
+                ( model, msg ) =
+                    updateList (PickerList.AddEntry text) model
+            in
+                { model | field = "" }
+                    ! [ msg ]
+
+        ToggleNav ->
+            { model | navbarOpen = not model.navbarOpen }
+                ! []
+
+        NewList ->
+            let
+                focus =
+                    Task.perform
+                        (\_ -> NoOp)
+                        (\_ -> NoOp)
+                        (Dom.focus (toString model.uid))
+            in
                 { model
-                    | entries = List.append model.entries (newEntry model.field model.uid :: [])
-                    , field = ""
+                    | lists = (PickerList.newList "List" model.uid True) :: model.lists
                     , uid = model.uid + 1
                 }
-                    ! []
-            else
-                model ! []
+                    ! [ focus ]
+
+        SelectList id ->
+            { model | selectedId = id }
+                ! []
 
         ToggleEditing id isEditing ->
             let
                 isNotEmpty =
                     case
-                        List.head <|
-                            List.filter (\e -> e.id == id) model.entries
+                        List.head <| List.filter (\l -> l.id == id) model.lists
                     of
                         Nothing ->
                             False
 
-                        Just entry ->
-                            not <| String.isEmpty entry.description
+                        Just list ->
+                            not <| String.isEmpty list.name
 
-                updateEntry e =
-                    if e.id == id then
-                        { e | editing = isEditing }
+                updateList list =
+                    if list.id == id then
+                        if isNotEmpty then
+                            { list | editing = isEditing }
+                        else
+                            { list
+                                | name = "List"
+                                , editing = isEditing
+                            }
                     else
-                        e
+                        list
 
                 focus =
                     let
@@ -162,145 +174,69 @@ update msg model =
                     in
                         Task.perform (\_ -> NoOp) (\_ -> NoOp) task
             in
-                if isNotEmpty then
-                    { model | entries = List.map updateEntry model.entries }
-                        ! [ focus ]
-                else
-                    removeEntry model id ! []
+                { model | lists = List.map updateList model.lists }
+                    ! [ focus ]
 
-        EditEntry id description ->
-            updateEntry model id description ! []
-
-        ToggleEditingSelected isEditing ->
+        EditList id name ->
             let
-                entry =
-                    List.head <| List.filter (\e -> e.id == model.selectedId) model.entries
-
-                focus =
-                    let
-                        task =
-                            if isEditing == True then
-                                Dom.focus "selected"
-                            else
-                                Task.succeed ()
-                    in
-                        Task.perform (\_ -> NoOp) (\_ -> NoOp) task
+                updateList list =
+                    if list.id == id then
+                        { list | name = name }
+                    else
+                        list
             in
-                case ( entry, model.selectedEntry ) of
-                    ( Just entry, Just selectedEntry ) ->
-                        if not <| String.isEmpty selectedEntry.description then
-                            { model
-                                | selectedEntry = Just { selectedEntry | editing = isEditing }
-                            }
-                                ! [ focus ]
-                        else
-                            removeEntry model selectedEntry.id ! []
-
-                    _ ->
-                        model ! []
-
-        EditSelectedEntry description ->
-            case model.selectedEntry of
-                Nothing ->
-                    model ! []
-
-                Just entry ->
-                    updateEntry model entry.id description ! []
-
-        RemoveEntry id ->
-            removeEntry model id ! []
-
-        RemoveAllEntries ->
-            { model
-                | entries = []
-                , selectedEntry = Nothing
-                , selectedId = -1
-                , uid = 0
-            }
-                ! []
-
-        SelectRandomEntry ->
-            ( model
-            , Random.generate NewRandom (Random.int 0 (List.length model.entries - 1))
-            )
-
-        NewRandom int ->
-            let
-                selectedEntry =
-                    List.head <| List.drop int model.entries
-
-                selectedId =
-                    case selectedEntry of
-                        Nothing ->
-                            -1
-
-                        Just entry ->
-                            entry.id
-            in
-                { model
-                    | selectedEntry = selectedEntry
-                    , selectedId = selectedId
-                }
+                { model | lists = List.map updateList model.lists }
                     ! []
+
+        RemoveList id ->
+            removeList model id ! []
 
         NoOp ->
             model ! []
 
 
-removeEntry : Model -> Int -> Model
-removeEntry model id =
-    let
-        ( selectedEntry, selectedId ) =
-            case model.selectedEntry of
-                Nothing ->
-                    ( Nothing, -1 )
+updateList : PickerList.Msg -> Model -> ( Model, Cmd Msg )
+updateList msg model =
+    case selectedList model of
+        Nothing ->
+            model ! []
 
-                Just entry ->
-                    if entry.id == id then
-                        ( Nothing, -1 )
+        Just list ->
+            let
+                ( newList, listMsg ) =
+                    PickerList.update msg list
+
+                updateList list =
+                    if list.id == newList.id then
+                        newList
                     else
-                        ( Just entry, entry.id )
+                        list
+            in
+                { model | lists = List.map updateList model.lists }
+                    ! [ Cmd.map (\m -> UpdateList m) listMsg ]
 
+
+removeList : Model -> Int -> Model
+removeList model id =
+    let
         model =
             { model
-                | entries = List.filter (\e -> e.id /= id) model.entries
-                , selectedEntry = selectedEntry
-                , selectedId = selectedId
+                | lists = List.filter (\l -> l.id /= id) model.lists
+                , selectedId =
+                    if id == model.selectedId then
+                        -1
+                    else
+                        model.selectedId
             }
     in
-        if List.isEmpty model.entries then
-            { model | uid = 0 }
+        if List.isEmpty model.lists then
+            { model
+                | lists = [ PickerList.newList "List" 0 False ]
+                , selectedId = 0
+                , uid = 1
+            }
         else
             model
-
-
-updateEntry : Model -> Int -> String -> Model
-updateEntry model id description =
-    let
-        entry =
-            List.head <| List.filter (\e -> e.id == id) model.entries
-    in
-        { model
-            | entries =
-                List.map
-                    (\e ->
-                        if e.id == id then
-                            { e | description = description }
-                        else
-                            e
-                    )
-                    model.entries
-            , selectedEntry =
-                case ( entry, model.selectedEntry ) of
-                    ( Just entry, Just selectedEntry ) ->
-                        if entry.id == selectedEntry.id then
-                            Just { selectedEntry | description = description }
-                        else
-                            Just selectedEntry
-
-                    _ ->
-                        model.selectedEntry
-        }
 
 
 
@@ -309,10 +245,10 @@ updateEntry model id description =
 
 view : Model -> Html Msg
 view model =
-    article []
+    div [ id "container" ]
         [ lazy viewHeader model.field
-        , lazy viewEntries model.entries
-        , lazy viewSelectedEntry model.selectedEntry
+        , lazy viewNavbar model
+        , lazy viewList model
         , viewFooter
         ]
 
@@ -320,17 +256,95 @@ view model =
 viewHeader : String -> Html Msg
 viewHeader field =
     header []
-        [ input
+        [ button
+            [ class "menu"
+            , onClick ToggleNav
+            ]
+            [ i [ class "material-icons" ] [ text "menu" ] ]
+        , input
             [ onInput UpdateField
-            , onEnter AddEntry
+            , onEnter (AddEntry field)
             , autofocus True
             , placeholder "Enter text"
             , value field
             ]
             []
         , button
-            [ onClick AddEntry ]
-            [ text "Add" ]
+            [ onClick (AddEntry field) ]
+            [ i [ class "material-icons" ] [ text "add" ] ]
+        ]
+
+
+viewNavbar : Model -> Html Msg
+viewNavbar model =
+    let
+        viewList list =
+            if list.editing then
+                li []
+                    [ input
+                        [ id (toString list.id)
+                        , onInput (EditList list.id)
+                        , onEnter (ToggleEditing list.id False)
+                        , onBlur (ToggleEditing list.id False)
+                        , value list.name
+                        ]
+                        []
+                    ]
+            else
+                li
+                    [ if list.id == model.selectedId then
+                        class "selected"
+                      else
+                        class ""
+                    ]
+                    [ span
+                        [ onClick (SelectList list.id) ]
+                        [ text list.name ]
+                    , button
+                        [ class "edit"
+                        , onClick (ToggleEditing list.id True)
+                        ]
+                        [ i [ class "material-icons" ] [ text "edit" ] ]
+                    , button
+                        [ onClick (RemoveList list.id) ]
+                        [ i [ class "material-icons" ] [ text "remove" ] ]
+                    ]
+    in
+        if model.navbarOpen == True then
+            nav [ class "open" ]
+                [ div []
+                    [ button
+                        [ class "menu"
+                        , onClick ToggleNav
+                        ]
+                        [ i [ class "material-icons" ] [ text "menu" ] ]
+                    , button [ onClick NewList ]
+                        [ i [ class "material-icons" ] [ text "add" ] ]
+                    ]
+                , ul [] (List.map viewList model.lists)
+                ]
+        else
+            nav [ class "closed" ]
+                [ button [ onClick NewList ] [ text "New List" ]
+                , ul [] (List.map viewList model.lists)
+                ]
+
+
+viewList : Model -> Html Msg
+viewList model =
+    case selectedList model of
+        Nothing ->
+            main' [] []
+
+        Just list ->
+            App.map (\m -> UpdateList m) (PickerList.view list)
+
+
+viewFooter : Html Msg
+viewFooter =
+    footer []
+        [ button [ onClick (UpdateList PickerList.RemoveAllEntries) ] [ text "Clear" ]
+        , button [ onClick (UpdateList PickerList.SelectRandomEntry) ] [ text "Pick" ]
         ]
 
 
@@ -344,69 +358,3 @@ onEnter msg =
                 NoOp
     in
         on "keydown" (Json.map tagger keyCode)
-
-
-viewEntries : List Entry -> Html Msg
-viewEntries entries =
-    ul [] (List.map viewEntry entries)
-
-
-viewEntry : Entry -> Html Msg
-viewEntry entry =
-    if entry.editing then
-        li []
-            [ input
-                [ id (toString entry.id)
-                , onInput (EditEntry entry.id)
-                , onEnter (ToggleEditing entry.id False)
-                , onBlur (ToggleEditing entry.id False)
-                , value entry.description
-                ]
-                []
-            ]
-    else
-        li
-            [ onClick (ToggleEditing entry.id True)
-            ]
-            [ span [] [ text entry.description ]
-            , button [ onClick (RemoveEntry entry.id) ] [ text "X" ]
-            ]
-
-
-viewSelectedEntry : Maybe Entry -> Html Msg
-viewSelectedEntry selectedEntry =
-    let
-        ( entry, display, innerText ) =
-            case selectedEntry of
-                Nothing ->
-                    ( emptyEntry, "none", text "" )
-
-                Just entry ->
-                    ( entry, "block", text entry.description )
-    in
-        section
-            [ style [ ( "display", display ) ] ]
-            [ if entry.editing then
-                input
-                    [ id "selected"
-                    , onInput EditSelectedEntry
-                    , onEnter (ToggleEditingSelected False)
-                    , onBlur (ToggleEditingSelected False)
-                    , value entry.description
-                    ]
-                    []
-              else
-                h1
-                    [ id "selected"
-                    , onClick (ToggleEditingSelected True)
-                    ]
-                    [ innerText ]
-            ]
-
-
-viewFooter : Html Msg
-viewFooter =
-    footer []
-        [ button [ onClick RemoveAllEntries ] [ text "Clear" ]
-        , button [ onClick SelectRandomEntry ] [ text "Pick" ]
-        ]
