@@ -3,3 +3,6 @@ elm-stuff
 Gemfile.lock
 platforms
 plugins
+www/js/main.js
+www/css/style.css
+www/css/style.css.map
